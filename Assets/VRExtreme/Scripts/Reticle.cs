@@ -6,7 +6,7 @@ public class Reticle : MonoBehaviour
 	private RaycastHit 	hit;
 	private Transform 	cameraObject;
 	private Vector3 	origScale;
-	private Camera 	  	camera;
+	private Camera 	  	lookCamera;
 	private float 		distance;	
 
 	// Use this for initialization
@@ -14,7 +14,12 @@ public class Reticle : MonoBehaviour
 	{
 		XtremeManager.OnUpdate += new XtremeManager.XtremeUpdate(OnUpdate);
 	}
-
+	void Start()
+	{
+		cameraObject = GameObject.Find("RightEyeAncor").GetComponent<Transform>()as Transform;
+		lookCamera = cameraObject.GetComponent<Camera>();
+		origScale = this.transform.localScale;
+	}
 	void OnDestroy()
 	{
 		XtremeManager.OnUpdate -= new XtremeManager.XtremeUpdate(OnUpdate);
@@ -24,11 +29,19 @@ public class Reticle : MonoBehaviour
 	{
 		if(Physics.Raycast(cameraObject.transform.position, cameraObject.transform.rotation * Vector3.forward * 2f, out hit))
 		{
-			distance = hit.distance * .95f;
+			if(hit.transform.tag != "ignore")
+			{
+
+				distance = hit.distance * .95f;
+			}
+			else
+			{
+
+			}
 		}
 		else
 		{
-			distance = camera.farClipPlane;
+			distance = lookCamera.farClipPlane;
 		}
 
 		transform.position = cameraObject.transform.position + cameraObject.transform.rotation * Vector3.forward * (distance * .95f);

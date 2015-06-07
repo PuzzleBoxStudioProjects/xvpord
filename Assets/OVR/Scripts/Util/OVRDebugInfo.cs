@@ -41,7 +41,6 @@ public class OVRDebugInfo : MonoBehaviour
     GameObject speedRotationMutipler;
     GameObject resolutionEyeTexture;
     GameObject latencies;
-    GameObject riftPresentGUIObject;
     GameObject texts;    
     #endregion
 
@@ -113,9 +112,6 @@ public class OVRDebugInfo : MonoBehaviour
         Canvas canvas = debugUIManager.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
         canvas.pixelPerfect = false;
-
-        // Check if Rift attached
-        CheckIfRiftPresent();
     }
 
     /// <summary>
@@ -299,26 +295,6 @@ public class OVRDebugInfo : MonoBehaviour
         Text text = riftPresent.GetComponentInChildren<Text>();
         text.text = strRiftPresent;
         text.fontSize = 20;
-    }  
-
-    /// <summary>
-    ///  Show UI for device detection
-    /// </summary>
-    void ShowRiftPresentGUI()
-    {
-        riftPresentGUIObject = new GameObject();
-        riftPresentGUIObject.name = "RiftPresent";
-        riftPresentGUIObject.transform.parent = GameObject.Find("LeftEyeAnchor").transform;
-
-        RectTransform rectTransform = riftPresentGUIObject.AddComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(100f, 100f);
-        rectTransform.localPosition = new Vector3(0.01f, 0.17f, 0.53f);
-        rectTransform.localEulerAngles = Vector3.zero;
-        rectTransform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
-        Canvas canvas = riftPresentGUIObject.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.WorldSpace;
-        canvas.pixelPerfect = false;
-        RiftPresentGUI(riftPresentGUIObject);
     }
 
     /// <summary>
@@ -329,11 +305,6 @@ public class OVRDebugInfo : MonoBehaviour
         if (riftPresentTimeout >= 0.0f)
         {
             riftPresentTimeout -= Time.deltaTime;
-        }
-
-        if (riftPresentTimeout < 0.0f)
-        {
-            DestroyImmediate(riftPresentGUIObject);
         }
     }
 
@@ -477,22 +448,6 @@ public class OVRDebugInfo : MonoBehaviour
             timeLeft += updateInterval;
             accum = 0.0f;
             frames = 0;
-        }
-    }
-
-    /// <summary>
-    /// Checks to see if HMD and / or sensor is available, and displays a 
-    /// message if it is not.
-    /// </summary>
-    void CheckIfRiftPresent()
-    {
-		hmdPresent = OVRManager.instance.isVRPresent;
-
-        if (!hmdPresent)
-        {
-            riftPresentTimeout = 15.0f;
-			strRiftPresent = "VR DISABLED";
-            ShowRiftPresentGUI();
         }
     }
 
