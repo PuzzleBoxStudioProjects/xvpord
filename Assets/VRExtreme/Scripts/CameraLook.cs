@@ -6,7 +6,6 @@ public class CameraLook : MonoBehaviour
 	public delegate void HitEvent(string name);
 	public static event HitEvent OnHit;
 
-	public GameObject 	reticleObject;
 
 	private GameObject 	centerEyeObject;
 	private GameObject 	currentObject;
@@ -25,6 +24,10 @@ public class CameraLook : MonoBehaviour
 		XtremeManager.OnUpdate -= new XtremeManager.XtremeUpdate(OnUpdate);
 	}
 
+	void OnStart()
+	{
+		centerEyeObject = GameObject.Find("RightEyeAnchor");
+	}
 	// Update is called once per frame
 	void OnUpdate () 
 	{
@@ -33,10 +36,7 @@ public class CameraLook : MonoBehaviour
 			if(OnHit != null)
 				OnHit(hit.transform.name);
 
-			if(hit.transform.tag == "ignore")
-				reticleObject.SetActive(false);
-			else
-				reticleObject.SetActive(true);
+		
 
 			if(currentObject != null && currentObject.transform.name != hit.transform.name)
 			{
@@ -58,7 +58,7 @@ public class CameraLook : MonoBehaviour
 		}
 		else
 		{
-			reticleObject.SetActive(false);
+		
 			currentObject = null;
 		}
 	}

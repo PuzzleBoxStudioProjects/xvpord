@@ -8,22 +8,17 @@ public class Buttons : MonoBehaviour
 	public static event ButtonEvent ButtonPressed;
 
 	public string buttonName;
-	public float selectSpeed;
+	public float selectTime;
 	public bool currentlySelected;
-
-	private SpriteRenderer 	progressRenderer;
+	
 	private SpriteRenderer  buttonRenderer;
-	private GameObject 	progress;
-	private Vector3		emptyBar;
-	private Vector3 	fullBar;
+	private float 			currentTime;
 
 	private void Start()
 	{
-		progress = transform.FindChild("progress").gameObject;
-		progressRenderer = progress.GetComponent<SpriteRenderer>();
+	
 		buttonRenderer = GetComponent<SpriteRenderer>();
-		fullBar = progress.transform.localScale;
-		emptyBar = new Vector3(0,progress.transform.localScale.y, progress.transform.localScale.z);
+	
 
 	}
 
@@ -31,38 +26,24 @@ public class Buttons : MonoBehaviour
 	{
 		if(currentlySelected)
 		{
-			if(progress.transform.localScale.x < fullBar.x)
+			if(currentTime < selectTime)
 			{
-				emptyBar = new Vector3(selectSpeed * Time.deltaTime, 0, 0);
-				progress.transform.localScale += emptyBar;
+				currentTime += Time.deltaTime;
 			}
 			else
 			{
 				if(ButtonPressed != null)
 					ButtonPressed(buttonName);
 
-				ShowLoading();
 			}
 
 		}
 		else
-			HideLoading();
+			currentTime = 0;
 	}
 
-	private void ShowLoading()
-	{
-		progressRenderer.enabled = true;
-	}
-	private void HideLoading()
-	{
-		emptyBar = new Vector3(0,progress.transform.localScale.y, progress.transform.localScale.z);
-		progress.transform.localScale = emptyBar;
-		progressRenderer.enabled = false;
-	}
-	
 	public void OnLook(bool isLooking)
 	{
 		currentlySelected = isLooking;
-		ShowLoading();
 	}
 }

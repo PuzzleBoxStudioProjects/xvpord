@@ -135,7 +135,10 @@ public class OVRTrackerBounds : MonoBehaviour
 				arrowObject.SetActive(false);
 
 			if (iconImage != null)
+			{
 				iconImage.enabled = false;
+				iconImage.gameObject.SetActive(false);
+			}
 
 			return;
 		}
@@ -157,7 +160,8 @@ public class OVRTrackerBounds : MonoBehaviour
             // Display arrow icon if approaching edge of volume
             if (dist > -fadeDistance)
             {
-                iconImage.enabled = true;
+                iconImage.gameObject.SetActive(true);
+				iconImage.enabled = true;
                 iconImage.texture = iconTextures[closestPlane];
                 float alpha = SmoothStep(-fadeDistance, 0.0f, dist);
                 iconImage.color = new Color(1.0f, 1.0f, 1.0f, alpha);
@@ -165,7 +169,8 @@ public class OVRTrackerBounds : MonoBehaviour
             else
             {
                 iconImage.enabled = false;
-            }
+				iconImage.gameObject.SetActive(false);
+			}
         }
 
         if (arrowObject)
