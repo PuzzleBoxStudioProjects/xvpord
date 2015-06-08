@@ -34,17 +34,6 @@ using Ovr;
 public class OVRManager : MonoBehaviour
 {
 	/// <summary>
-	/// Contains information about the user's preferences and body dimensions.
-	/// </summary>
-	public struct Profile
-	{
-		public float ipd;
-		public float eyeHeight;
-		public float eyeDepth;
-		public float neckHeight;
-	}
-
-	/// <summary>
 	/// Contains the valid range of antialiasing levels usable with Unity render textures.
 	/// </summary>
 	public enum RenderTextureAntiAliasing
@@ -103,50 +92,24 @@ public class OVRManager : MonoBehaviour
 	public static OVRTracker tracker { get; private set; }
 
 	private static bool _profileIsCached = false;
-	private static Profile _profile;
+	private static OVRProfile _profile;
 	/// <summary>
 	/// Gets the current profile, which contains information about the user's settings and body dimensions.
 	/// </summary>
-	public static Profile profile
+	public static OVRProfile profile
 	{
 		get {
 			if (!_profileIsCached)
 			{
-#if !UNITY_ANDROID || UNITY_EDITOR
-				float ipd = Hmd.OVR_DEFAULT_IPD;
-				float eyeHeight = Hmd.OVR_DEFAULT_EYE_HEIGHT;
-				float[] defaultOffset = new float[] { Hmd.OVR_DEFAULT_NECK_TO_EYE_HORIZONTAL, Hmd.OVR_DEFAULT_NECK_TO_EYE_VERTICAL };
-				float[] neckToEyeOffset = defaultOffset;
-
-				if (capiHmd != null)
-				{
-					ipd = capiHmd.GetFloat(Hmd.OVR_KEY_IPD, ipd);
-					eyeHeight = capiHmd.GetFloat(Hmd.OVR_KEY_EYE_HEIGHT, eyeHeight);
-					neckToEyeOffset = capiHmd.GetFloatArray(Hmd.OVR_KEY_NECK_TO_EYE_DISTANCE, defaultOffset);
-				}
-
-				_profile = new Profile
-				{
-					ipd = ipd,
-					eyeHeight = eyeHeight,
-					eyeDepth = neckToEyeOffset[0],
-					neckHeight = eyeHeight - neckToEyeOffset[1],
-				};
-#else
-				float ipd = 0.0f;
-				OVR_GetInterpupillaryDistance(ref ipd);
+				_profile = new OVRProfile();
+				_profile.TriggerLoad();
 				
-				float eyeHeight = 0.0f;
-				OVR_GetPlayerEyeHeight(ref eyeHeight);
+				while (_profile.state == OVRProfile.State.LOADING)
+					System.Threading.Thread.Sleep(1);
 				
-				_profile = new Profile
-				{
-					ipd = ipd,
-					eyeHeight = eyeHeight,
-					eyeDepth = 0.0805f, //TODO: Load from profile
-					neckHeight = eyeHeight - 0.075f, // TODO: Load from profile
-				};
-#endif
+				if (_profile.state != OVRProfile.State.READY)
+					Debug.LogWarning("Failed to load profile.");
+				
 				_profileIsCached = true;
 			}
 
@@ -392,9 +355,9 @@ public class OVRManager : MonoBehaviour
 	/// True if the current platform supports virtual reality.
 	/// </summary>
     public bool isSupportedPlatform { get; private set; }
-
+	
 	/// <summary>
-	/// True if the runtime is installed.
+	/// True if the runtime is installed, a VR display is present, and VR is supported in the current configuration.
 	/// </summary>
 	public bool isVRPresent { get { return _isVRPresent; } private set { _isVRPresent = value; } }
 	private static bool _isVRPresent = false;
@@ -505,8 +468,9 @@ public class OVRManager : MonoBehaviour
 			// If unable to load the Oculus Runtime,
 			if (!OVR_Initialize())
 			{
-				Debug.LogWarning("Unable initialize VR. Please make sure the runtime is installed and running and a VR display is attached.");
-
+#if !UNITY_ANDROID
+				Debug.LogWarning("Unable to initialize VR. Please make sure the runtime is installed and running and a VR display is attached.");
+#endif
 				// Runtime is not installed if ovr_Initialize() fails.
 				isVRPresent = false;
 				// Go monoscopic in response.
@@ -529,7 +493,7 @@ public class OVRManager : MonoBehaviour
 					Debug.LogWarning("VR direct mode rendering is not supported in the editor. Please use extended mode or build a stand-alone player.");
 #endif
 
-                ovrIsInitialized = true;
+				ovrIsInitialized = true;
 			}
 		}
 
@@ -637,7 +601,7 @@ public class OVRManager : MonoBehaviour
 		if (tracker == null)
 			tracker = new OVRTracker();
 		if (display == null)
-			display = new OVRDisplay ();
+			display = new OVRDisplay();
 		else
 			wasRecreated = true;
 
@@ -866,18 +830,19 @@ public class OVRManager : MonoBehaviour
 		// Service VrApi events
 		// If this code is not called, internal VrApi events will never be pushed to the internal event queue.
 		VrApiEventStatus pendingResult = (VrApiEventStatus)OVR_GetNextPendingEvent( EventData, (uint)MaxDataSize );
-		while( pendingResult == VrApiEventStatus.PENDING ) {
-			if ( OnVrApiEvent != null )
+		while (pendingResult == VrApiEventStatus.PENDING)
+		{
+			if (OnVrApiEvent != null)
 			{
-				OnVrApiEvent( EventData.ToString() );
+				OnVrApiEvent(EventData.ToString());
 			}
 			else
 			{
-				Debug.Log( "No OnVrApiEvent delegate set!" );
+				Debug.Log("No OnVrApiEvent delegate set!");
 			}
 
 			EventData.Length = 0;
-			pendingResult = (VrApiEventStatus)OVR_GetNextPendingEvent( EventData, (uint)MaxDataSize );
+			pendingResult = (VrApiEventStatus)OVR_GetNextPendingEvent(EventData, (uint)MaxDataSize);
 		}
 #endif
 	}
@@ -906,7 +871,7 @@ public class OVRManager : MonoBehaviour
 			OVRManager.DoTimeWarp(timeWarpViewNumber);
 #else
 			if (isVRPresent)
-				display.EndFrame();
+			display.EndFrame();
 #endif
         }
 	}
@@ -1073,11 +1038,6 @@ public class OVRManager : MonoBehaviour
 	private static extern int OVR_GetVolume();
 	[DllImport(LibOVR)]
 	private static extern double OVR_GetTimeSinceLastVolumeChange();
-
-	[DllImport(LibOVR)]
-	private static extern bool OVR_GetPlayerEyeHeight(ref float eyeHeight);
-	[DllImport(LibOVR)]
-	private static extern bool OVR_GetInterpupillaryDistance(ref float interpupillaryDistance);
 	[DllImport(LibOVR)]
 	private static extern int OVR_GetNextPendingEvent( StringBuilder sb, uint bufferSize );
 #endif
