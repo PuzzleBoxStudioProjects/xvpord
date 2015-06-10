@@ -6,4 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/EasyMovieTexture/Scene/Demo.unity
+    path: Assets/VRExtreme/Scenes/RedBull/Menu.unity
+  - enabled: 1
+    path: Assets/VRExtreme/Scenes/RedBull/Movies.unity
+  - enabled: 1
+    path: Assets/VRExtreme/Scenes/RedBull/Media.unity
+  - enabled: 1
+    path: Assets/VRExtreme/Scenes/RedBull/Events.unity
