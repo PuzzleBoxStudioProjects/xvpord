@@ -13,15 +13,24 @@ public class FeedReader : MonoBehaviour
 
 
 		yield return web;
-
+		string[] text = new string[100];
+		int count = 0;
 		if(web.error == null)
 		{
 			Debug.Log("Succesfully Loaded feed");
 
-			XmlDocument doc = new XmlDocument();
-			doc.LoadXml(web.text);
-			StripFeed(doc.SelectNodes("rss/channel/item"));
+			//XmlDocument doc = new XmlDocument();
+			//doc.LoadXml(web.text);
+			TinyXmlReader reader = new TinyXmlReader(web.text);
 
+			while (reader.Read())
+			{
+
+				text[count] += (reader.tagName + " " + reader.content);
+				count++;
+				if(count == 50)
+					Debug.Log("What the fuck");
+			}
 		}
 		else 
 			Debug.Log("Error: " + web.error);
