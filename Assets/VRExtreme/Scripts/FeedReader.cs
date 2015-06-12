@@ -21,16 +21,7 @@ public class FeedReader : MonoBehaviour
 
 			//XmlDocument doc = new XmlDocument();
 			//doc.LoadXml(web.text);
-			TinyXmlReader reader = new TinyXmlReader(web.text);
 
-			while (reader.Read())
-			{
-
-				text[count] += (reader.tagName + " " + reader.content);
-				count++;
-				if(count == 50)
-					Debug.Log("What the fuck");
-			}
 		}
 		else 
 			Debug.Log("Error: " + web.error);
