@@ -62,7 +62,7 @@ namespace CorruptedSmileStudio.Feeds
             }
             if (feedDisplay.activeInHierarchy)
             {
-                feedDisplay.SetActive(false);
+                feedDisplay.SetActive(true);
                 ShowFeedDisplay();
             }
         }
@@ -74,7 +74,7 @@ namespace CorruptedSmileStudio.Feeds
         {
             if (feedDisplay.activeInHierarchy)
             {
-                feedDisplay.SetActive(false);
+                feedDisplay.SetActive(true);
                 return;
             }
             if (!initialised)
@@ -85,7 +85,7 @@ namespace CorruptedSmileStudio.Feeds
                     for (int i = 0; i < feed.Items.Count; i++)
                     {
                         go = (GameObject)Instantiate(feedDisplayItemPrefab);
-                        go.transform.SetParent(feedDisplayList, false);
+                        go.transform.SetParent(feedDisplayList, true);
                         go.GetComponent<FeedItemDisplay>().Initialise(feed.Items[i]);
                     }
                     initialised = true;
