@@ -6,6 +6,7 @@ namespace CorruptedSmileStudio.Feeds
     /// </summary>
     public class FeedItem
     {
+		string imageURL;
         /// <summary>
         /// The title of the item
         /// </summary>
@@ -22,7 +23,11 @@ namespace CorruptedSmileStudio.Feeds
         /// The date it was published in DateTime format
         /// </summary>
         System.DateTime date;
-
+		public string ImageURL
+		{
+			get{ return imageURL;}
+			set{ imageURL = value;}
+		}
         /// <summary>
         /// The title of the feed entry.
         /// </summary>
@@ -88,6 +93,7 @@ namespace CorruptedSmileStudio.Feeds
             Title = "";
             Link = "";
             Message = "";
+			ImageURL = " ";
             Date = new System.DateTime();
         }
         /// <summary>
@@ -97,8 +103,9 @@ namespace CorruptedSmileStudio.Feeds
         /// <param name="message">The message content of the feed item</param>
         /// <param name="link">The url to the item</param>
         /// <param name="date">The date it was published</param>
-        public FeedItem(string title, string message, string link, System.DateTime date)
+        public FeedItem(string title, string message, string imageUrl, string link, System.DateTime date)
         {
+			ImageURL = imageUrl;
             Title = title;
             Message = message;
             Link = link;

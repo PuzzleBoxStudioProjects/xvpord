@@ -154,7 +154,7 @@ namespace CorruptedSmileStudio.Feeds
                         feed = new SimpleFeed(1);
                     // sets all the error messages
                     feedStatus = Status.Error;
-                    FeedItem item = new FeedItem(errorMessageText, www.error, "", DateTime.Now);
+                    FeedItem item = new FeedItem(errorMessageText, www.error, "", "", DateTime.Now);
                     feed.Items.Add(item);
                     Debug.LogError(www.error);
                 }

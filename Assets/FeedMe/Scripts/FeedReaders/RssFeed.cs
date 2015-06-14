@@ -49,18 +49,22 @@ namespace CorruptedSmileStudio.Feeds
                         feed.Link = reader.content;
                     }
                     // Gets the item's description
-                    else if (reader.tagName == "img" && reader.isOpeningTag)
+                    else if (reader.tagName == "description" && reader.isOpeningTag)
                     {
-                        if (reader.xmlString.Substring(reader.index + 1, 10).Contains("<img src="))
+                        if (reader.xmlString.Substring(reader.index + 1, 10).Contains("<![CDATA["))
                         {
                             string content = reader.xmlString.Substring(reader.index + 1);
-                            feed.Message = StripHTML(content.Substring(0, content.IndexOf(">")));
+                            feed.Message = StripHTML(content.Substring(0, content.IndexOf("]]>")));
                         }
                         else
                         {
                             feed.Message = StripHTML(reader.content);
                         }
                     }
+					else if (reader.tagName.StartsWith("img") && reader.isOpeningTag)
+					{
+						feed.ImageURL = reader.tagName.Substring(reader.tagName.IndexOf("h"), (reader.tagName.Length - reader.tagName.IndexOf("h"))-1);                 
+					}
                 }
                 items.Add(feed);
                 // Checks to see if it must load all items or a specific amount.

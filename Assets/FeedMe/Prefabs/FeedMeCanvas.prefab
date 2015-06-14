@@ -872,7 +872,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   feedDisplay: {fileID: 100020}
   feedDisplayList: {fileID: 22400018}
-  feedDisplayItemPrefab: {fileID: 100010, guid: 132877262f121604db1449fb32e34019,
+  feedDisplayItemPrefab: {fileID: 180932, guid: aaab3c6bf55396f4db48838adf271b6c,
     type: 2}
   openButtonText: {fileID: 11400040}
   loadingFeedsText: 4c6f6164696e672066656564732e2e2e
@@ -887,7 +887,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6b824f53773634ca12d020c00fba8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  feedURL: 687474703a2f2f736e616b6562697465696e6b2e636f2e7a612f66656564732f7273732e786d6c
+  feedURL: http://www.redbull.com/us/en/rss/index.rss
   type: 0
   updateOnce: 0
   minutesToUpdate: 60
@@ -961,7 +961,7 @@ Canvas:
   m_GameObject: {fileID: 100008}
   m_Enabled: 1
   serializedVersion: 2
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -1048,8 +1048,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 8.10000038}
+  m_LocalScale: {x: .0170000009, y: .0199999996, z: .100000001}
   m_Children:
   - {fileID: 22400000}
   - {fileID: 22400020}
@@ -1057,9 +1057,9 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_AnchoredPosition: {x: .409999996, y: -1.36000001}
+  m_SizeDelta: {x: 500, y: 650}
+  m_Pivot: {x: .5, y: .5}
 --- !u!224 &22400010
 RectTransform:
   m_ObjectHideFlags: 1

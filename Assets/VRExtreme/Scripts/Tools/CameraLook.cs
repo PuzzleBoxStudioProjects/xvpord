@@ -24,7 +24,7 @@ public class CameraLook : MonoBehaviour
 		XtremeManager.OnUpdate -= new XtremeManager.XtremeUpdate(OnUpdate);
 	}
 
-	void OnStart()
+	void Start()
 	{
 		centerEyeObject = GameObject.Find("RightEyeAnchor");
 	}
@@ -48,12 +48,13 @@ public class CameraLook : MonoBehaviour
 			}
 			else 
 			{
-				if(currentObject.transform.tag == "button")
+				if(currentObject != null && currentObject.transform.tag == "button")
 				{
 					currentObject = hit.transform.gameObject;
 					Buttons buttons = currentObject.GetComponent<Buttons>();
 					buttons.OnLook(true);
 				}	
+
 			}
 		}
 		else
