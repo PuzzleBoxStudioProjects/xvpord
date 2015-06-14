@@ -36,7 +36,11 @@ namespace CorruptedSmileStudio.Feeds
                     // Gets the item's title
                     if (reader.tagName == "title" && reader.isOpeningTag)
                     {
-                        feed.Title = reader.content;
+						if(reader.xmlString.Substring(reader.index +1, 10).Contains("<![CDATA["))
+						{
+							string content = reader.xmlString.Substring(reader.index+1);
+							feed.Title = StripHTML(content.Substring(0, content.IndexOf("]]>")));
+						}
                     }
                     // Gets the item's published date
                     else if (reader.tagName == "pubDate" && reader.isOpeningTag)
