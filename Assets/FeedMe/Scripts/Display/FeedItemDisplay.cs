@@ -52,6 +52,7 @@ namespace CorruptedSmileStudio.Feeds
             });
 
 			gameObject.SetActive(true);
+			running = true;
 			StartCoroutine(WaitForWWW(feedItem));          
         }
 
@@ -63,9 +64,8 @@ namespace CorruptedSmileStudio.Feeds
 				WWW www = new WWW(item.ImageURL);
 				yield return www;
 				www.LoadImageIntoTexture((Texture2D)imageTex.GetComponent<Renderer>().material.mainTexture);
-
-			}
-			running = false;
+				running = false;
+			}		
 		}
     }
 }
